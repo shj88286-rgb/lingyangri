@@ -91,7 +91,7 @@
     let tailAt = 0, tailStarted = 0;
     let stopped = false, playing = false, preparing = false, positioned = false;
     let filmStarted = false, filmDone = false, filmEndAt = 0, rollEnd = 0;
-    let runId, endingSeen = false;
+    let runId, endingSeen = false, filmBuffered = false;
 
     function checkpoint(complete = false, rewind = false) {
       return model.saveEnding(elapsed, complete, 4, {run: runId, rewind,
@@ -109,6 +109,9 @@
       audio.removeEventListener('timeupdate', tick);
       video.removeEventListener('error', mediaFailed);
       video.removeEventListener('ended', endFilm);
+      playing = false;
+      window.ADOPTION_ASSETS.release(audio);
+      window.ADOPTION_ASSETS.release(video);
       cancel = null;
       release();
     }
@@ -169,6 +172,10 @@
       cancelAnimationFrame(frame);
       elapsed = tailStarted ? tailAt + performance.now() - tailStarted : audio.currentTime * 1000;
       while (index < plan.length && plan[index].at <= elapsed) draw(plan[index++], false);
+      if (!filmDone && !filmBuffered && elapsed >= filmAt - 6000) {
+        filmBuffered = true;
+        media.bufferFilm();
+      }
       if (elapsed >= filmAt && !filmStarted && !filmDone) beginFilm();
 
       if (filmDone) {
@@ -187,7 +194,10 @@
           rollEnd = rollStart + window.ADOPTION_ENDING_CREDITS.rollDuration;
           ui.roll((elapsed - rollStart) / (rollEnd - rollStart));
         } else if (elapsed < rollEnd + 2000) setStep('blackout');
-        else setStep('complete');
+        else if (step !== 'complete') {
+          checkpoint(true); // The summary is playable even while the last notes are still sounding.
+          setStep('complete');
+        }
       }
 
       if (filmDone && step === 'complete' && audio.ended) {

@@ -7,7 +7,6 @@
   for (const kind of ['current', 'legacy']) {
     const button = $(`#choose-${kind === 'legacy' ? 'old' : 'current'}-account`);
     button.querySelector('span').textContent = accounts[kind].name;
-    button.querySelector('img').src = accounts[kind].avatar;
   }
   let loginTimer;
   let loggedIn = false;
@@ -21,15 +20,45 @@
   returnToSecond.textContent = '返回2008年聊天'; returnToSecond.hidden = true;
   $('.game-title-actions').prepend(returnToSecond);
   returnToSecond.addEventListener('click', () => {
-    window.ADOPTION_BLOG.leave();
+    window.ADOPTION_BLOG?.leave();
     if (secondSceneStarted) window.ADOPTION_SECOND_PLAY.resume();
     else startSecondPlay(true);
   });
-  function startSecondPlay(resumeReady = false) {
+  let loginRevision = 0;
+  async function startSecondPlay(resumeReady = false, explicitLogin = false) {
+    const revision = ++loginRevision;
+    // Preserve the initiating tap for media playback even while fetching the legacy UI.
+    let openingMusic;
+    let replayOpening = false;
+    try {
+      const existingRun = localStorage.getItem('adoption-day-six-day-v2');
+      if (explicitLogin && (existingRun ? JSON.parse(existingRun).phase === 'complete' : !localStorage.getItem('adoption-day-six-day-v1'))) {
+        openingMusic = new Audio();
+        openingMusic.muted = true;
+        window.ADOPTION_ASSETS.attach(openingMusic, 'assets/audio/autumn-wind.m4a', {preload: 'auto'});
+        openingMusic.play().catch(() => {});
+      }
+      await window.ADOPTION_ASSETS.loadGroups('chat', 'legacy', 'legacy-state', 'legacy-ui');
+      if (revision !== loginRevision) { window.ADOPTION_ASSETS.release(openingMusic); return; }
+      const model = window.ADOPTION_SIX_DAY_STATE;
+      const saved = model.read();
+      if (explicitLogin && saved.phase === 'complete') {
+        const reset = await model.dispatch({type: 'replay', revision: saved.revision});
+        replayOpening = reset.phase === 'intro';
+        if (revision !== loginRevision) { window.ADOPTION_ASSETS.release(openingMusic); return; }
+      }
+    } catch {
+      window.ADOPTION_ASSETS.release(openingMusic);
+      if (revision !== loginRevision) return;
+      noticeConfirmed = true;
+      showLogin('legacy');
+      $('#login-error').textContent = '游戏资源未能载入，请再次登录';
+      return;
+    }
     loggedIn = true; lastLoginAccount = 'legacy';
     secondSceneStarted = true;
     sessionStorage.setItem(secondSessionKey, 'true');
-    window.ADOPTION_SECOND_PLAY.start({resumeReady, onExit: () => showLogin('legacy'), onBrowse: () => {
+    window.ADOPTION_SECOND_PLAY.start({resumeReady, replayOpening, openingMusic, onExit: () => showLogin('legacy'), onBrowse: () => {
       showGame(); returnToSecond.hidden = false;
     }});
   }
@@ -38,19 +67,20 @@
   const query = new URLSearchParams(location.search);
   if (location.protocol === 'file:') hospitalReset.save(query.get('resetDate'));
   try { rememberedOldAccount = localStorage.getItem('adoption-day-old-account-v1') === 'true'; } catch { /* 仍可在本次游玩中切换。 */ }
-  const chats = window.ADOPTION_CHATS;
-  let selectedContact = chats[0].id;
+  let chats = [];
+  let selectedContact;
+  let chatNeedsRender = true;
   let contactQuery = '';
   let messageQuery = '';
   let selectedDate = '';
-  const albums = window.ADOPTION_ALBUMS;
+  let albums;
   const albumSaveKey = 'adoption-day-albums-v1';
   const unlockedAlbums = new Set();
   let activeAlbum = '';
   let pendingAlbum = '';
   try {
     const saved = JSON.parse(localStorage.getItem(albumSaveKey) || '[]');
-    if (Array.isArray(saved)) saved.filter(id => albums.some(album => album.id === id && album.locked)).forEach(id => unlockedAlbums.add(id));
+    if (Array.isArray(saved)) saved.forEach(id => unlockedAlbums.add(id));
   } catch { /* 本地存储不可用时，仍可在本次游玩中解锁相册。 */ }
   const escapeHTML = text => String(text).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   function boldClues(text, pattern) {
@@ -72,6 +102,8 @@
   });
 
   function showIntro() {
+    ++loginRevision;
+    ++viewRevision;
     siteNav.clearSpace();
     secondSceneStarted = false;
     sessionStorage.removeItem(secondSessionKey); returnToSecond.hidden = true;
@@ -79,7 +111,7 @@
     ending.stopMusic();
     $('#hospital-mail-toast').hidden = true;
     window.ADOPTION_SECOND_PLAY?.stop();
-    window.ADOPTION_BLOG.leave();
+    window.ADOPTION_BLOG?.leave();
     closeAccountMenu();
     noticeConfirmed = false;
     $('#intro-screen').hidden = false;
@@ -101,6 +133,8 @@
   }
 
   function showLogin(kind = 'current') {
+    ++loginRevision;
+    ++viewRevision;
     siteNav.clearSpace();
     secondSceneStarted = false;
     sessionStorage.removeItem(secondSessionKey); returnToSecond.hidden = true;
@@ -109,12 +143,14 @@
       return;
     }
     window.ADOPTION_SECOND_PLAY?.stop();
-    window.ADOPTION_BLOG.leave();
+    window.ADOPTION_BLOG?.leave();
     closeAccountMenu();
     resetLogin();
     $('#hospital-mail-toast').hidden = true;
     $('#login-account-picker').hidden = false;
     $('#choose-old-account').hidden = !rememberedOldAccount;
+    $('#choose-current-account img').src = accounts.current.avatar;
+    if (rememberedOldAccount) $('#choose-old-account img').src = accounts.legacy.avatar;
     selectLoginAccount(kind);
     $('#intro-screen').hidden = true;
     $('#login-screen').hidden = false;
@@ -147,7 +183,7 @@
     document.querySelectorAll('[data-login-account]').forEach(button => {
       button.setAttribute('aria-pressed', String(button.dataset.loginAccount === kind));
     });
-    if (manual || old) window.ADOPTION_SECOND_PLAY?.prepare?.();
+    if (kind === 'current') window.ADOPTION_ASSETS.warm(['assets/wang.webp']);
     if (manual) $('#pp-account').focus({preventScroll:true});
   }
 
@@ -177,7 +213,6 @@
   $('#confirm-start').addEventListener('click', () => {
     if (!$('#notice-read').checked) return;
     noticeConfirmed = true;
-    window.ADOPTION_ENDING_MEDIA.warm();
     $('#notice-dialog').close();
     showLogin();
   });
@@ -254,7 +289,7 @@
       try { localStorage.setItem('adoption-day-old-account-v1', 'true'); } catch { /* 只记住本次游玩的账号。 */ }
       document.body.classList.remove('login-open');
       // 在点击事件内启动演出与音频，兼容手机浏览器的播放限制。
-      startSecondPlay();
+      startSecondPlay(false, true);
       return;
     }
     // 账号仅用于本地剧情切换，不连接账号服务，也不发送密码。
@@ -282,6 +317,7 @@
 
   function renderMessages() {
     const contact = chats.find(item => item.id === selectedContact);
+    if (!contact) return;
     const sections = contact.sections.filter(section => !selectedDate || section.date === selectedDate);
     let html = '';
     sections.forEach(section => {
@@ -295,7 +331,7 @@
       html += messages.map(([time,from,text]) => {
         const self = from === 'self';
         const speaker = self ? '忧郁小猫猫' : contact.name;
-        return `<article class="chat-message ${self ? 'from-self' : 'from-other'}"><img decoding="async" loading="eager" width="32" height="32" class="message-avatar" src="${self ? 'assets/avatar.webp' : escapeHTML(contact.avatar)}" alt=""><div class="message-content"><header class="message-heading"><span>${speaker}</span><time datetime="${section.date}T${time}">${time}</time></header><p class="message-bubble">${boldClues(text, cluePattern)}</p></div></article>`;
+        return `<article class="chat-message ${self ? 'from-self' : 'from-other'}"><img decoding="async" loading="lazy" width="32" height="32" class="message-avatar" src="${self ? 'assets/avatar.webp' : escapeHTML(contact.avatar)}" alt=""><div class="message-content"><header class="message-heading"><span>${speaker}</span><time datetime="${section.date}T${time}">${time}</time></header><p class="message-bubble">${boldClues(text, cluePattern)}</p></div></article>`;
       }).join('');
       html += '</section>';
     });
@@ -316,18 +352,18 @@
     $('#game-screen').classList.remove('contacts-open');
   }
 
-  function showGame() {
+  function showGame(module = 'chat') {
     if (!noticeConfirmed || !loggedIn) return;
     $('#intro-screen').hidden = true;
     $('#login-screen').hidden = true;
     $('#game-screen').hidden = false;
     document.body.classList.remove('login-open');
     document.body.classList.add('game-open');
-    activateModule('chat');
-    selectContact(selectedContact);
+    for (const image of document.querySelectorAll('[data-avatar="current"]')) image.src = accounts.current.avatar;
+    chatNeedsRender = true;
     $('#game-screen').classList.add('contacts-open');
     window.scrollTo(0,0);
-    $('#game-contact-list button')?.focus({preventScroll:true});
+    return activateModule(module);
   }
 
   $('#game-contact-list').addEventListener('click', event => {
@@ -344,8 +380,8 @@
   $('#blog-module').addEventListener('click', () => {
     activateModule('blog');
   });
-  $('#mail-module').addEventListener('click', () => { activateModule('mail'); showInbox(); });
-  $('#album-module').addEventListener('click', () => { activateModule('album'); renderAlbumList(); });
+  $('#mail-module').addEventListener('click', () => { activateModule('mail'); });
+  $('#album-module').addEventListener('click', () => { activateModule('album'); });
   $('#game-home').addEventListener('click', showIntro);
   $('#game-logout').addEventListener('click', () => showLogin(lastLoginAccount));
   $('#account-menu-logout').addEventListener('click', () => showLogin(lastLoginAccount));
@@ -369,7 +405,9 @@
     }
   });
 
-  function activateModule(module) {
+  let viewRevision = 0;
+  async function activateModule(module) {
+    const revision = ++viewRevision;
     const isAlbum = module === 'album';
     const isBlog = module === 'blog';
     const isMail = module === 'mail';
@@ -383,8 +421,35 @@
     $('#album-panel').hidden = !isAlbum;
     $('#blog-panel').hidden = !isBlog;
     $('#mail-panel').hidden = !isMail;
-    if (isBlog && !blogWasOpen) window.ADOPTION_BLOG.enter();
-    if (!isBlog && blogWasOpen) window.ADOPTION_BLOG.leave();
+    if (!isBlog && blogWasOpen) window.ADOPTION_BLOG?.leave();
+    const panel = isChat ? $('.contacts-panel') : $('#' + module + '-panel');
+    try {
+      await window.ADOPTION_ASSETS.loadGroups(module);
+    } catch {
+      if (revision === viewRevision && !panel.querySelector('.module-load-error')) {
+        const warning = document.createElement('p');
+        warning.className = 'module-load-error';
+        warning.textContent = '资源未能载入，请再次点击栏目重试';
+        panel.prepend(warning);
+      }
+      return false;
+    }
+    if (revision !== viewRevision || $('#game-screen').hidden) return false;
+    panel.querySelector('.module-load-error')?.remove();
+    if (isChat && chatNeedsRender) {
+      chats = window.ADOPTION_CHATS;
+      selectContact(selectedContact || chats[0].id);
+      chatNeedsRender = false;
+      $('#game-contact-list button')?.focus({preventScroll:true});
+    } else if (isAlbum) {
+      albums = window.ADOPTION_ALBUMS;
+      renderAlbumList();
+    } else if (isMail) {
+      renderMailList();
+      showInbox();
+    } else if (isBlog && (!blogWasOpen || !window.ADOPTION_BLOG.active())) {
+      window.ADOPTION_BLOG.enter();
+    }
     [$('#chat-module'), $('#blog-module'), $('#mail-module'), $('#album-module')].forEach(button => {
       const active = button.id === `${module}-module`;
       button.classList.toggle('active', active);
@@ -417,13 +482,12 @@
     const date = hospitalReset.read();
     if (!date || date === lastResetDate) return;
     lastResetDate = date;
-    renderMailList();
+    if (mailItems) renderMailList();
     if (!$('#game-screen').hidden) mailToast.hidden = false;
   }
-  renderMailList();
   window.addEventListener('storage', event => {
     if (event.key === hospitalReset.key) receiveHospitalMail();
-    else if (event.key === hospitalReset.openedKey) renderMailList();
+    else if (event.key === hospitalReset.openedKey && mailItems) renderMailList();
   });
 
   function showMailView(open) {
@@ -463,7 +527,7 @@
     const item = event.target.closest('[data-open-mail]');
     if (item) openMail(item.dataset.openMail);
   });
-  function openHospitalMail(message = hospitalReset.id) {
+  async function openHospitalMail(message = hospitalReset.id) {
     if (!hospitalReset.read()) return;
     if ($('#game-screen').hidden) {
       $('#game-cover').hidden = true;
@@ -473,9 +537,8 @@
         lastLoginAccount = 'legacy';
         returnToSecond.hidden = false;
       }
-      showGame();
-    }
-    activateModule('mail');
+      if (await showGame('mail') === false) return;
+    } else if (await activateModule('mail') === false) return;
     if (message === 'inbox') showInbox();
     else openMail(hospitalReset.id);
     if (query.get('from') === 'hospital' && !$('#mail-return-hospital')) {
@@ -499,11 +562,11 @@
   function renderAlbumList() {
     activeAlbum = '';
     $('#album-panel').classList.remove('view-photo');
-    $('#album-panel').innerHTML = albumHeader('相册', `${albums.length} 个相册`) + `<div class="album-grid">${albums.map(album => {
+    $('#album-panel').innerHTML = albumHeader('相册', `${albums.length} 个相册`) + `<div class="album-grid">${albums.map((album, index) => {
       // 密码相册在列表里始终使用锁定封面，不因已保存的解锁状态露出照片。
       const locked = Boolean(album.locked);
       const photo = !locked && album.photos[0];
-      return `<button class="album-tile ${locked ? 'is-locked' : ''}" data-open-album="${album.id}"><span class="album-cover ${photo ? 'has-photo' : ''}">${photo ? `<img src="${escapeHTML(photo.thumbnail)}" width="480" height="360" alt="" loading="eager" decoding="async">` : `<svg class="icon"><use href="#${locked ? 'lock' : 'album'}"/></svg>`}</span><span class="album-tile-name">${escapeHTML(album.name)}${locked ? '<svg class="icon"><use href="#lock"/></svg>' : ''}</span><span class="album-photo-count">${album.photos.length} 张照片</span></button>`;
+      return `<button class="album-tile ${locked ? 'is-locked' : ''}" data-open-album="${album.id}"><span class="album-cover ${photo ? 'has-photo' : ''}">${photo ? `<img src="${escapeHTML(photo.thumbnail)}" width="480" height="360" alt="" loading="${index < 2 ? 'eager' : 'lazy'}" decoding="async">` : `<svg class="icon"><use href="#${locked ? 'lock' : 'album'}"/></svg>`}</span><span class="album-tile-name">${escapeHTML(album.name)}${locked ? '<svg class="icon"><use href="#lock"/></svg>' : ''}</span><span class="album-photo-count">${album.photos.length} 张照片</span></button>`;
     }).join('')}</div>`;
     $('#album-panel').scrollTop = 0;
   }
@@ -517,7 +580,7 @@
     const photoCards = album.photos.map((photo, index) => {
       const caption = photo.caption ? `<span class="album-photo-caption">${escapeHTML(photo.caption)}</span>` : '';
       const uploaded = photo.uploadedAt && photo.uploadedLabel ? photoUploadTime(photo) : '';
-      return `<button class="album-photo-card ${caption || uploaded ? '' : 'photo-only-card'}" data-open-photo="${photo.id}" aria-label="${escapeHTML(photo.caption || album.name + ' · 照片' + (index + 1))}"><span class="photo-thumbnail"><img src="${escapeHTML(photo.thumbnail)}" width="${photo.width}" height="${photo.height}" loading="eager" decoding="async" alt=""></span>${caption}${uploaded}</button>`;
+      return `<button class="album-photo-card ${caption || uploaded ? '' : 'photo-only-card'}" data-open-photo="${photo.id}" aria-label="${escapeHTML(photo.caption || album.name + ' · 照片' + (index + 1))}"><span class="photo-thumbnail"><img src="${escapeHTML(photo.thumbnail)}" width="${photo.width}" height="${photo.height}" loading="${index < 2 ? 'eager' : 'lazy'}" decoding="async" alt=""></span>${caption}${uploaded}</button>`;
     }).join('');
     const introduction = album.introduction ? `<div class="album-introduction"><span>相册简介：</span><p>${escapeHTML(album.introduction)}</p></div>` : '';
     $('#album-panel').innerHTML = albumHeader(album.name, `${album.photos.length} 张照片`, 'list', album.visibility) + introduction + (album.photos.length ? `<div class="album-photo-grid">${photoCards}</div>` : '<div class="album-empty"><svg class="icon" aria-hidden="true"><use href="#album"/></svg><p>暂无照片</p></div>');
@@ -549,10 +612,10 @@
     const uploaded = photo.uploadedAt && photo.uploadedLabel ? `<p class="photo-upload-time">上传时间：${photoUploadTime(photo)}</p>` : '';
     const caption = photo.caption ? `<p class="photo-caption">${escapeHTML(photo.caption).replaceAll('\n', '<br>')}</p>` : '';
     const commentClue = photo.id === 'hidden-snow-drawing' ? /纸飞机画展/g : null;
-    const comments = photo.comments?.length ? `<section class="photo-comments" aria-label="评论互动"><h2>评论互动</h2><ol tabindex="0" aria-label="评论列表">${photo.comments.map(comment => `<li><img src="${escapeHTML(comment.avatar)}" width="28" height="28" loading="eager" decoding="async" alt=""><div><strong>${escapeHTML(comment.author)}</strong><time datetime="${comment.at.replace(' ', 'T')}">${comment.at}</time><p>${boldClues(comment.text, commentClue)}</p></div></li>`).join('')}</ol></section>` : '';
+    const comments = photo.comments?.length ? `<section class="photo-comments" aria-label="评论互动"><h2>评论互动</h2><ol tabindex="0" aria-label="评论列表">${photo.comments.map(comment => `<li><img src="${escapeHTML(comment.avatar)}" width="28" height="28" loading="lazy" decoding="async" alt=""><div><strong>${escapeHTML(comment.author)}</strong><time datetime="${comment.at.replace(' ', 'T')}">${comment.at}</time><p>${boldClues(comment.text, commentClue)}</p></div></li>`).join('')}</ol></section>` : '';
     const hasInfo = Boolean(uploaded || caption || comments);
     $('#album-panel').classList.add('view-photo');
-    $('#album-panel').innerHTML = albumHeader(album.name, '', album.id, album.visibility) + `<article class="photo-detail ${hasInfo ? '' : 'photo-only-detail'} ${comments ? 'has-comments' : ''}"><div class="photo-image-panel"><img class="photo-full-image" src="${escapeHTML(photo.small)}" srcset="${escapeHTML(photo.small)} ${photo.smallWidth}w, ${escapeHTML(photo.src)} ${photo.width}w" sizes="(max-width: 680px) calc(100vw - 32px), (max-width: 1000px) calc(100vw - 410px), 730px" width="${photo.width}" height="${photo.height}" decoding="async" fetchpriority="high" alt="${escapeHTML(photo.caption || album.name)}"></div>${hasInfo ? `<div class="photo-info">${uploaded}${caption}${comments}</div>` : ''}</article>`;
+    $('#album-panel').innerHTML = albumHeader(album.name, '', album.id, album.visibility) + `<article class="photo-detail ${hasInfo ? '' : 'photo-only-detail'} ${comments ? 'has-comments' : ''}"><div class="photo-image-panel"><img class="photo-full-image" src="${escapeHTML(photo.small)}" srcset="${escapeHTML(photo.thumbnail)} ${Math.round(480 * photo.width / Math.max(photo.width, photo.height))}w, ${escapeHTML(photo.small)} ${photo.smallWidth}w, ${escapeHTML(photo.src)} ${photo.width}w" sizes="(max-width: 680px) calc(100vw - 32px), (max-width: 1000px) calc(100vw - 410px), 730px" width="${photo.width}" height="${photo.height}" decoding="async" fetchpriority="high" alt="${escapeHTML(photo.caption || album.name)}"></div>${hasInfo ? `<div class="photo-info">${uploaded}${caption}${comments}</div>` : ''}</article>`;
     $('#album-panel').scrollTop = 0;
     $('#album-panel .album-back').focus({preventScroll:true});
     if (photo.id === 'hidden-snow-drawing') window.ADOPTION_ACHIEVEMENTS.record('snow-drawing');
@@ -605,7 +668,7 @@
       ending.play(showEndingLogin, true);
     } else if (ending.read()?.phase === 'pending') ending.play(showEndingLogin);
   }
-  function resumeSpace() {
+  async function resumeSpace() {
     const account = siteNav.readSpace();
     if (!['current','legacy'].includes(account)) return;
     if (account === 'legacy' && ending.read()?.phase !== 'done') return;
@@ -614,9 +677,7 @@
     loggedIn = true;
     lastLoginAccount = account;
     returnToSecond.hidden = account !== 'legacy';
-    showGame();
-    activateModule('blog');
-    window.ADOPTION_BLOG.openSitePost();
+    if (await showGame('blog') !== false) window.ADOPTION_BLOG.openSitePost();
   }
 
   if (!replay && (!ending.allFilesRead() || ending.read()?.phase !== 'pending')) {
@@ -627,7 +688,7 @@
     } else if ([hospitalReset.id, 'inbox'].includes(query.get('mail'))) openHospitalMail(query.get('mail'));
     else if (query.get('view') === 'space' && siteNav.readSpace()) resumeSpace();
     else if (sessionStorage.getItem(secondSessionKey) === 'true' && ending.read()?.phase === 'done' &&
-             window.ADOPTION_SIX_DAY.hasSave()) {
+             (localStorage.getItem('adoption-day-six-day-v2') || localStorage.getItem('adoption-day-six-day-v1'))) {
       cover.hidden = true; noticeConfirmed = true; startSecondPlay();
     }
   }

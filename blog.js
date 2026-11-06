@@ -201,7 +201,7 @@
   function renderCommentList(date, entries, avatars = {}) {
     return `<ol>${entries.map(([time, author, text, avatar = avatars[author], commentDate = date]) => `
       <li>
-        ${avatar ? `<img src="assets/${avatar}.webp" width="29" height="29" alt="" loading="eager">`
+        ${avatar ? `<img src="assets/${avatar}.webp" width="29" height="29" alt="" loading="lazy" decoding="async">`
           : `<span class="blog-guest-avatar" aria-hidden="true">${escapeHTML(author[0])}</span>`}
         <div><header><strong>${escapeHTML(author)}</strong><time datetime="${commentDate}T${time}">${commentDate} ${time}</time></header><p>${escapeHTML(text)}</p></div>
       </li>
@@ -687,7 +687,7 @@ PP头像一直都是灰色的
             <section class="blog-widget" id="blog-about" tabindex="-1">
               <h2>本猫的名片</h2>
               <div class="blog-profile">
-                <img src="assets/avatar.webp" width="60" height="60" alt="">
+                <img loading="lazy" decoding="async" src="assets/avatar.webp" width="60" height="60" alt="">
                 <strong>忧郁小猫猫</strong>
                 <p>秋叶孤儿院第一帅哥</p>
               </div>
@@ -732,7 +732,7 @@ PP头像一直都是灰色的
               <div class="blog-post-divider">${paw} ${paw} ${paw}</div>
               ${renderComments('blog-comments-title', '2008-03-09', openingComments)}
             </article>
-            <article class="blog-post blog-locked-post" id="blog-locked-post" aria-labelledby="blog-locked-title" hidden>
+            <article class="blog-post blog-locked-post" id="blog-locked-post" aria-labelledby="blog-locked-title" hidden><template data-private-post>
               <header class="blog-post-heading">
                 <h2 id="blog-locked-title" tabindex="-1">以前的家</h2>
                 <div class="blog-post-meta"><time datetime="2008-03-16T20:17">2008/3/16 20:17</time><span>密码访问</span></div>
@@ -759,7 +759,7 @@ PP头像一直都是灰色的
                 <h3 id="blog-closed-comments-title">评论区</h3>
                 <p>主人已关闭评论</p>
               </section>
-            </article>
+            </template></article>
             <article class="blog-post blog-friend-post" id="blog-friend-post" aria-labelledby="blog-friend-title" hidden>
               <header class="blog-post-heading">
                 <h2 id="blog-friend-title" tabindex="-1">介绍一下我的新朋友！！！</h2>
@@ -775,7 +775,7 @@ PP头像一直都是灰色的
               </div>
               ${renderComments('blog-friend-comments-title', '2008-07-18', friendComments)}
             </article>
-            <article class="blog-post blog-if-post" id="blog-if-post" aria-labelledby="blog-if-title" hidden>
+            <article class="blog-post blog-if-post" id="blog-if-post" aria-labelledby="blog-if-title" hidden><template data-private-post>
               <header class="blog-post-heading">
                 <h2 id="blog-if-title" tabindex="-1">如果</h2>
                 <div class="blog-post-meta"><time datetime="2008-08-16T22:06">2008/8/16 22:06</time><span>私密日记</span></div>
@@ -785,7 +785,7 @@ PP头像一直都是灰色的
                 <h3 id="blog-if-comments-title">评论区</h3>
                 <p>主人已关闭评论</p>
               </section>
-            </article>
+            </template></article>
             <article class="blog-post blog-wanted-post" id="blog-wanted-post" aria-labelledby="blog-wanted-title" hidden>
               <header class="blog-post-heading">
                 <div>
@@ -922,7 +922,7 @@ PP头像一直都是灰色的
               </div>
               ${renderComments('blog-cheng-second-comments', '2008-07-20', chengSecondComments)}
             </section>
-            <section class="blog-cheng-article" id="blog-cheng-memo-post" aria-labelledby="blog-cheng-memo-title" hidden>
+            <section class="blog-cheng-article" id="blog-cheng-memo-post" aria-labelledby="blog-cheng-memo-title" hidden><template data-private-post>
               <button class="blog-cheng-player" type="button" data-cheng-journal-back>← 返回日志</button>
               <header>
                 <h2 id="blog-cheng-memo-title" tabindex="-1">† 封印の备忘录 †</h2>
@@ -945,7 +945,7 @@ PP头像一直都是灰色的
               <section class="blog-comments blog-comments-closed" aria-labelledby="blog-memo-comments-title">
                 <h3 id="blog-memo-comments-title">评论区</h3>
                 <p>主人已关闭评论</p>
-              </section>
+              </section></template>
             </section>
           </div>
         </div>
@@ -969,7 +969,6 @@ PP头像一直都是灰色的
   `;
 
   const music = new Audio();
-  window.ADOPTION_ASSETS.attach(music, 'assets/audio/blog-go-where-the-wind-is.m4a');
   music.loop = true;
   music.volume = .19;
   const musicButton = panel.querySelector('#blog-music-toggle');
@@ -998,7 +997,6 @@ PP头像一直都是灰色的
   const chengLink = panel.querySelector('#blog-cheng-link');
   const chengTabs = [...chengSpace.querySelectorAll('[data-cheng-view]')];
   const chengMusic = new Audio();
-  window.ADOPTION_ASSETS.attach(chengMusic, 'assets/audio/cheng-rose-funeral.m4a');
   chengMusic.loop = true;
   chengMusic.volume = .42;
   const chengMusicButton = panel.querySelector('#blog-cheng-music');
@@ -1036,7 +1034,7 @@ PP头像一直都是灰色的
       const copy = escapeHTML(paragraph).replace(studioClue, '<strong>' + studioClue + '</strong>').replaceAll('\n', '<br>');
       const art = paragraph.startsWith('她问我为什么叫《家》') ? `
         <figure class="blog-studio-art"><img src="assets/photos/blog-studio-home.webp" width="900" height="675"
-          loading="eager" decoding="async" alt="蜡笔画《家》，画着一栋红屋顶的房子，窗台上趴着一只猫"></figure>` : '';
+          loading="lazy" decoding="async" alt="蜡笔画《家》，画着一栋红屋顶的房子，窗台上趴着一只猫"></figure>` : '';
       return `<p>${copy}</p>${art}`;
     });
     studioCopy.innerHTML = `
@@ -1091,6 +1089,11 @@ PP头像一直都是灰色的
     panel.scrollTop = 0;
   }
 
+  function revealContent(post) {
+    const template = post.querySelector('template[data-private-post]');
+    if (template) template.replaceWith(template.content);
+  }
+
   function openPost(index, syncHistory = true) {
     const post = posts[index];
     const studioSpace = post.id === 'blog-studio-post';
@@ -1104,6 +1107,7 @@ PP头像一直都是灰色的
     } else if (syncHistory) {
       clearStudioRoute();
     }
+    revealContent(post);
     openedIndex = index;
     const dragonSpace = post.id === 'blog-if-post';
     const friendSpace = post.id === 'blog-friend-post';
@@ -1164,7 +1168,8 @@ PP头像一直都是灰色的
   const accessSubmit = panel.querySelector('#blog-access-submit');
   let accessChallenge = null;
   panel.querySelector('#blog-site-link').addEventListener('click', () => music.pause());
-  panel.querySelector('#blog-cheng-homework-link').addEventListener('click', () => {
+  chengSpace.addEventListener('click', event => {
+    if (!event.target.closest('#blog-cheng-homework-link')) return;
     panel.querySelector('#blog-homework-image').src = 'assets/photos/cheng-homework.webp';
     homeworkDialog.showModal();
   });
@@ -1282,6 +1287,7 @@ PP头像一直都是灰色的
   for (const entry of chengSpace.querySelectorAll('[data-cheng-post]')) {
     const article = document.getElementById(entry.getAttribute('aria-controls'));
     function openArticle() {
+      revealContent(article);
       showChengSection(chengTabs[1], article);
       article.querySelector('h2').focus({preventScroll: true});
       if (entry === memoEntry && memoUnlocked) window.ADOPTION_ACHIEVEMENTS.record('sealed-memo-opened');
@@ -1302,7 +1308,8 @@ PP头像一直都是灰色的
         }
       });
     });
-    article.querySelector('[data-cheng-journal-back]').addEventListener('click', () => {
+    article.addEventListener('click', event => {
+      if (!event.target.closest('[data-cheng-journal-back]')) return;
       showChengSection(chengTabs[1]);
       entry.focus();
     });
@@ -1330,6 +1337,7 @@ PP头像一直都是灰色的
   });
 
   window.ADOPTION_BLOG = {
+    active: () => active,
     openSitePost() { requestPost(0); },
     enter() {
       active = true;
@@ -1343,8 +1351,8 @@ PP头像一直都是灰色的
       active = false;
       clearStudioRoute();
       accessChallenge = null;
-      music.pause();
-      chengMusic.pause();
+      window.ADOPTION_ASSETS.release(music, true);
+      window.ADOPTION_ASSETS.release(chengMusic, true);
       if (accessDialog.open) accessDialog.close();
       if (homeworkDialog.open) homeworkDialog.close();
     }

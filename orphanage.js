@@ -181,7 +181,7 @@
     main.innerHTML = heading('首页', [], '用心守护童年，陪伴每段成长') + `<div class="site-wrap home-content">
       <div class="home-layout">
         <section class="site-carousel" aria-label="院区照片轮播">
-          ${slides.map((photo, index) => `<img src="${photo.src}" alt="${photo.label}" ${index ? 'hidden' : 'fetchpriority="high"'}>`).join('')}
+          ${slides.map((photo, index) => `<img ${index ? 'data-src' : 'src'}="${photo.src}" decoding="async" alt="${photo.label}" ${index ? 'hidden' : 'fetchpriority="high"'}>`).join('')}
           <div class="hero-caption"><h2>让每一个孩子，<br>都有被爱的机会</h2></div>
           <div class="carousel-controls">
             <button type="button" id="slide-prev" aria-label="上一张">‹</button>
@@ -213,6 +213,10 @@
     function showSlide(index) {
       current = (index + slides.length) % slides.length;
       images.forEach((image, i) => {
+        if (i === current && image.dataset.src) {
+          image.src = image.dataset.src;
+          delete image.dataset.src;
+        }
         image.hidden = i !== current;
         if (i === current) dots[i].setAttribute('aria-current', 'true');
         else dots[i].removeAttribute('aria-current');
@@ -272,7 +276,7 @@
           <p>秋叶孤儿院设有生活宿舍、公共活动室、阅读空间和户外活动区域，为儿童提供日常生活、学习及休闲活动场所。</p>
           <div class="campus-gallery">
             ${gallery.map((photo, index) => `<button type="button" data-photo="${index}" aria-label="放大查看${photo.label}">
-              <img src="${photo.src}" alt="" loading="eager" width="320" height="180"><span>${photo.label}</span>
+              <img src="${photo.src}" alt="" loading="lazy" width="320" height="180"><span>${photo.label}</span>
             </button>`).join('')}
           </div>
         </section>
@@ -381,7 +385,7 @@
     ];
     main.innerHTML = heading(sections.life.title, [], '珍藏日常时光，感受生活温度') + `<div class="site-wrap content-area life-grid">
       ${activities.map(({title, photo, alt, description}, index) => `<article class="life-card">
-        <img src="assets/orphanage-news-${photo}.webp" alt="${alt}" width="640" height="360" loading="eager" decoding="async">
+        <img src="assets/orphanage-news-${photo}.webp" alt="${alt}" width="640" height="360" loading="${index === 0 ? 'eager' : 'lazy'}" decoding="async">
         <div class="life-card-copy">
           <h2><span aria-hidden="true">0${index + 1}｜</span>${title}</h2>
           <p>${description}</p>
@@ -420,7 +424,7 @@
     main.innerHTML = heading(sections.projects.title, [], '汇聚社会爱心，支持儿童成长') + `<div class="site-wrap content-area projects-page">
       <p class="projects-intro">秋叶孤儿院积极联合社会爱心企业、公益组织及志愿者，为院内儿童提供教育、生活及成长方面的支持。我们重视每一份善意，也希望通过持续、务实的公益行动，为孩子们创造更加稳定、温暖的成长环境。</p>
       ${projects.map(({title, photo, alt, width, height, description}, index) => `<article class="project-row">
-        <img src="assets/${photo}" alt="${alt}" width="${width}" height="${height}" loading="eager" decoding="async">
+        <img src="assets/${photo}" alt="${alt}" width="${width}" height="${height}" loading="${index === 0 ? 'eager' : 'lazy'}" decoding="async">
         <div class="project-copy">
           <h2><span aria-hidden="true">0${index + 1}｜</span>${title}</h2>
           <p>${description}</p>
@@ -455,8 +459,8 @@
 
   function renderNewsList(items, titleTag = 'h2') {
     return `<ul class="news-list">
-        ${items.map(([id, date, title, views]) => `<li id="news-${id}">
-          <img src="assets/orphanage-news-${id}.webp" alt="" width="640" height="360" loading="eager">
+        ${items.map(([id, date, title, views], index) => `<li id="news-${id}">
+          <img src="assets/orphanage-news-${id}.webp" alt="" width="640" height="360" loading="${index === 0 && titleTag === 'h2' ? 'eager' : 'lazy'}" decoding="async">
           <div>
             <${titleTag}>${title}</${titleTag}>
             <div class="news-meta">
@@ -486,7 +490,7 @@
   function renderArchiveContent(article) {
     const {work, photos: articlePhotos, paragraphs} = article;
     const renderPhoto = photo => `<figure>
-      <button type="button" class="archive-image-button" data-photo="${articlePhotos.indexOf(photo)}" aria-label="放大查看${photo.label}"><img src="${photo.src}" alt="" width="1448" height="1086" loading="eager"></button>
+      <button type="button" class="archive-image-button" data-photo="${articlePhotos.indexOf(photo)}" aria-label="放大查看${photo.label}"><img src="${photo.src}" alt="" width="1448" height="1086" loading="lazy" decoding="async"></button>
       <figcaption>${photo.label}</figcaption>
     </figure>`;
     const body = paragraphs.map((paragraph, index) => {

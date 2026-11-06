@@ -6,39 +6,39 @@
   <meta name="theme-color" content="#eff4fc">
   <title>秋叶孤儿院调查录</title>
   <link rel="stylesheet" href="asset-preload.css?v=nonblocking-20261105">
-  <script src="asset-preload.js?v=nonblocking-20261105" defer></script>
+  <script src="asset-preload.js?v=staged-1106" defer></script>
   <script src="game-reset.js?v=keep-achievements"></script>
   <script src="achievements.js?v=replay-peace-20261105" defer></script>
   <link rel="stylesheet" href="styles.css?v=full-images-20261105">
-  <link rel="stylesheet" href="modern-ui.css">
-  <link rel="stylesheet" href="intro-autumn.css?v=portrait-20261105">
-  <link rel="stylesheet" href="second-play.css?v=mobile-stack-20261105">
-  <link rel="stylesheet" href="six-day.css?v=mobile-stack-20261105">
+  <template data-boot="base"><link rel="stylesheet" href="modern-ui.css"></template>
+  <template data-boot="base"><link rel="stylesheet" href="intro-autumn.css?v=portrait-20261105"></template>
+  <template data-boot="legacy"><link rel="stylesheet" href="second-play.css?v=mobile-stack-20261105"></template>
+  <template data-boot="legacy"><link rel="stylesheet" href="six-day.css?v=mobile-stack-20261105"></template>
   <link rel="stylesheet" href="first-play-ending.css?v=home-20261105-2">
-  <script src="ending-typography.js?v=polish-20261105"></script>
-  <script src="first-play-ending.js?v=nonblocking-20261105"></script>
-  <link rel="stylesheet" href="blog.css?v=full-images-20261105">
-  <script src="accounts.js" defer></script>
-  <script src="story.js?v=credit" defer></script>
-  <script src="chats.js?v=workbook-copy" defer></script>
-  <script src="albums.js?v=crayon-sunflower" defer></script>
-  <script src="mail.js?v=sender-id" defer></script>
-  <script src="second-play-data.js?v=pp-dialogue" defer></script>
-  <script src="six-day-dialogues.js?v=promise-flags" defer></script>
-  <script src="six-day-state.js?v=replay-peace-20261105" defer></script>
-  <script src="six-day.js?v=polish-20261105" defer></script>
-  <script src="ending-dialogue.js?v=final-title" defer></script>
-  <script src="ending-media.js?v=replay-peace-20261105" defer></script>
-  <script src="ending-credits.js?v=credits-short-20261105" defer></script>
-  <script src="second-ending.js?v=replay-peace-20261105" defer></script>
-  <script src="second-play.js?v=replay-peace-20261105" defer></script>
-  <script src="blog.js?v=nonblocking-20261105" defer></script>
+  <template data-boot="base"><script src="ending-typography.js?v=polish-20261105"></script></template>
+  <script src="first-play-ending.js?v=staged-1106"></script>
+  <template data-boot="blog"><link rel="stylesheet" href="blog.css?v=full-images-20261105"></template>
+  <template data-boot="base"><script src="accounts.js"></script></template>
+  <template data-boot="base"><script src="story.js?v=credit"></script></template>
+  <template data-boot="chat"><script src="chats.js?v=workbook-copy"></script></template>
+  <template data-boot="album"><script src="albums.js?v=crayon-sunflower"></script></template>
+  <template data-boot="mail"><script src="mail.js?v=sender-id"></script></template>
+  <template data-boot="legacy"><script src="second-play-data.js?v=pp-dialogue"></script></template>
+  <template data-boot="legacy"><script src="six-day-dialogues.js?v=promise-flags"></script></template>
+  <template data-boot="legacy-state"><script src="six-day-state.js?v=replay-peace-20261105"></script></template>
+  <template data-boot="legacy-ui"><script src="six-day.js?v=polish-20261105"></script></template>
+  <template data-boot="legacy"><script src="ending-dialogue.js?v=final-title"></script></template>
+  <template data-boot="legacy"><script src="ending-media.js?v=staged-1106"></script></template>
+  <template data-boot="legacy"><script src="ending-credits.js?v=credits-short-20261105"></script></template>
+  <template data-boot="legacy-ui"><script src="second-ending.js?v=staged-1106"></script></template>
+  <template data-boot="legacy-ui"><script src="second-play.js?v=staged-1106"></script></template>
+  <template data-boot="blog"><script src="blog.js?v=staged-1106"></script></template>
   <link rel="stylesheet" href="landscape.css?v=full-images-20261105">
-  <script src="site-navigation.js?v=home-20261105-2" defer></script>
-  <link rel="stylesheet" href="hospital-flow.css?v=full-images-20261105">
-  <script src="hospital-reset.js?v=same-tab" defer></script>
+  <template data-boot="base"><script src="site-navigation.js?v=home-20261105-2"></script></template>
+  <template data-boot="base"><link rel="stylesheet" href="hospital-flow.css?v=full-images-20261105"></template>
+  <template data-boot="base"><script src="hospital-reset.js?v=same-tab"></script></template>
   <link rel="stylesheet" href="achievements.css?v=bottom-left-20261105">
-  <script src="app.js?v=preloaded-20261105" defer></script>
+  <template data-boot="entry"><script src="app.js?v=staged-1106"></script></template>
 </head>
 <body>
   <button type="button" id="game-cover" aria-label="秋叶孤儿院调查录，点击封面进入剧情">
@@ -100,7 +100,7 @@
       <div class="login-card">
         <div class="login-halo" aria-hidden="true"></div>
         <header class="login-topbar"><span class="pp-logo"><svg class="pp-mark"><use href="#pp-mark"/></svg><strong>PP</strong></span><button class="login-close" id="close-login" aria-label="返回开场">×</button></header>
-        <div class="login-content"><div id="login-account-picker" class="login-account-picker" role="group" aria-label="选择账号"><button id="choose-current-account" type="button" data-login-account="current" aria-pressed="true"><img src="assets/avatar.webp" width="28" height="28" alt=""><span>忧郁小猫猫</span></button><button id="choose-old-account" type="button" data-login-account="legacy" aria-pressed="false" hidden><img src="assets/cheng.webp" width="28" height="28" alt=""><span>城南旧章</span></button><button id="choose-other-account" type="button" data-login-account="manual" aria-pressed="false">切换账号</button></div><div class="login-avatar"><img decoding="async" src="assets/avatar.webp" alt="忧郁小猫猫的头像"><span class="online-status" aria-label="在线"></span></div><h1 class="nickname">忧郁小猫猫</h1>
+        <div class="login-content"><div id="login-account-picker" class="login-account-picker" role="group" aria-label="选择账号"><button id="choose-current-account" type="button" data-login-account="current" aria-pressed="true"><img width="28" height="28" alt=""><span>忧郁小猫猫</span></button><button id="choose-old-account" type="button" data-login-account="legacy" aria-pressed="false" hidden><img width="28" height="28" alt=""><span>城南旧章</span></button><button id="choose-other-account" type="button" data-login-account="manual" aria-pressed="false">切换账号</button></div><div class="login-avatar"><img decoding="async" alt="忧郁小猫猫的头像"><span class="online-status" aria-label="在线"></span></div><h1 class="nickname">忧郁小猫猫</h1>
           <form id="login-form"><label class="field-label" for="pp-account">账号</label><div class="input-wrap"><span class="input-user" aria-hidden="true">◎</span><input id="pp-account" name="account" type="text" value="忧郁小猫猫" readonly aria-readonly="true" autocomplete="off" spellcheck="false"></div><label class="field-label" for="pp-password">密码</label><div class="input-wrap password-wrap"><svg class="icon"><use href="#lock"/></svg><input id="pp-password" name="passcode" type="password" inputmode="text" autocapitalize="none" spellcheck="false" value="leisongran0628" readonly aria-readonly="true" autocomplete="off"><svg class="icon fixed-lock" aria-label="密码已锁定"><use href="#lock"/></svg></div><div class="login-options"><span><svg class="checkbox-check"><use href="#check"/></svg>记住密码</span></div><p id="login-error" class="login-error" role="status" aria-live="polite"></p><button class="login-button" id="login-button" type="submit" aria-live="polite"><span id="login-button-text">登录</span><span class="login-spinner" hidden></span></button><p id="login-status" class="login-status" role="status" hidden>请稍候</p></form>
           <button type="button" class="notice-link" id="play-ending-music" hidden>播放片尾曲《诗歌都是胆小鬼》</button>
         </div>
@@ -108,9 +108,9 @@
     </section>
 
     <section class="game-screen contacts-open" id="game-screen" aria-label="PP" hidden>
-      <header class="game-titlebar"><span class="pp-logo"><svg class="pp-mark" aria-hidden="true"><use href="#pp-mark"/></svg><strong>PP</strong></span><div class="game-title-actions"><button type="button" class="achievement-entry" data-achievement-open>成就</button><button id="account-menu-toggle" class="account-menu-toggle" aria-label="账号菜单" aria-haspopup="menu" aria-controls="account-menu" aria-expanded="false"><img src="assets/avatar.webp" width="26" height="26" alt=""></button><button id="game-home" class="game-close" aria-label="返回开场">×</button></div><div id="account-menu" class="account-menu" role="menu" hidden><button id="account-menu-logout" role="menuitem">退出登录</button></div></header>
+      <header class="game-titlebar"><span class="pp-logo"><svg class="pp-mark" aria-hidden="true"><use href="#pp-mark"/></svg><strong>PP</strong></span><div class="game-title-actions"><button type="button" class="achievement-entry" data-achievement-open>成就</button><button id="account-menu-toggle" class="account-menu-toggle" aria-label="账号菜单" aria-haspopup="menu" aria-controls="account-menu" aria-expanded="false"><img data-avatar="current" width="26" height="26" alt=""></button><button id="game-home" class="game-close" aria-label="返回开场">×</button></div><div id="account-menu" class="account-menu" role="menu" hidden><button id="account-menu-logout" role="menuitem">退出登录</button></div></header>
       <nav class="game-nav" aria-label="游戏板块">
-        <div class="game-profile"><img decoding="async" src="assets/avatar.webp" alt="忧郁小猫猫"><span class="profile-online" aria-hidden="true"></span></div>
+        <div class="game-profile"><img decoding="async" data-avatar="current" alt="忧郁小猫猫"><span class="profile-online" aria-hidden="true"></span></div>
         <button class="module-button active" id="chat-module" aria-current="page"><svg class="icon"><use href="#chat"/></svg><span>聊天</span></button>
         <button class="module-button" id="blog-module"><svg class="icon"><use href="#blog"/></svg><span>博客</span></button>
         <button class="module-button" id="mail-module"><svg class="icon"><use href="#mail"/></svg><span>邮箱</span></button>
@@ -123,7 +123,7 @@
         <div id="game-contact-list" class="game-contact-list"></div>
       </aside>
       <section class="chat-panel" aria-labelledby="chat-title">
-        <header class="conversation-heading"><button id="show-contacts" class="show-contacts" aria-label="返回联系人"><svg class="icon"><use href="#back"/></svg></button><img decoding="async" id="conversation-avatar" class="contact-avatar" src="assets/wang.webp" alt=""><h2 id="chat-title">王院长</h2><span class="history-label">聊天记录</span></header>
+        <header class="conversation-heading"><button id="show-contacts" class="show-contacts" aria-label="返回联系人"><svg class="icon"><use href="#back"/></svg></button><img decoding="async" id="conversation-avatar" class="contact-avatar" alt=""><h2 id="chat-title">王院长</h2><span class="history-label">聊天记录</span></header>
         <div class="conversation-tools"><label class="date-filter"><span>日期</span><select id="chat-date" aria-label="筛选聊天日期"></select></label><label class="message-search"><svg class="icon"><use href="#search"/></svg><input id="message-search" type="search" placeholder="搜索聊天记录" aria-label="搜索聊天记录" autocomplete="off"></label></div>
         <div id="conversation-history" class="conversation-history" tabindex="0" aria-label="聊天记录"></div>
       </section>

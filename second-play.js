@@ -83,7 +83,7 @@
   }
   // 《秋风》使用本地音轨，复古提示音仍由浏览器合成。
   const musicSource = 'assets/audio/autumn-wind.m4a';
-  let audioContext, masterGain, bgm, musicFadeTimer, musicLoad, musicExpected = false;
+  let audioContext, masterGain, bgm, musicFadeTimer, musicExpected = false;
   const sources = new Set();
   function soundReady() {
     return audioContext?.state === 'running' && (!musicExpected || !bgm.paused);
@@ -140,15 +140,15 @@
       return player.play();
     }).catch(() => { if (player === bgm) updateAudioButton(); });
   }
-  function prepareMusic(resuming) {
-    bgm = new Audio();
+  function prepareMusic(openingMusic) {
+    bgm = openingMusic || new Audio();
     bgm.hidden = true;
     screen.append(bgm);
     bgm.loop = true;
     bgm.volume = 0;
+    bgm.muted = true;
     bgm.addEventListener('playing', updateAudioButton);
     bgm.addEventListener('pause', updateAudioButton);
-    musicLoad = window.ADOPTION_ASSETS.attach(bgm, musicSource);
     // Start silently within the login flow; the existing cue controls the fade-in.
     playMusic();
   }
@@ -177,6 +177,7 @@
     updateAudioButton();
   }
   function startMusic(volume) {
+    if (bgm) bgm.muted = false;
     musicExpected = true;
     playMusic();
     fadeMusic(volume, .55);
@@ -185,7 +186,7 @@
     stopMusic(); for (const source of sources) { try { source.stop(); } catch {} } sources.clear();
     if (audioContext && audioContext.state !== 'closed') audioContext.close().catch(() => {});
     bgm?.remove();
-    musicLoad = undefined;
+    window.ADOPTION_ASSETS.release(bgm);
     audioContext = undefined; masterGain = undefined; bgm = undefined;
   }
   // 用有重叠与错位的横向窗框铺满画面；外围只复用此刻已经发送的消息。
@@ -612,17 +613,17 @@
     if (record.text === '其实我也挺想有个家的' || record.text === '你要是在就好了') delay += 950;
     return delay;
   }
-  function start({onExit, onBrowse, resumeReady = false} = {}) {
+  function start({onExit, onBrowse, openingMusic, replayOpening = false, resumeReady = false} = {}) {
     stop(); running = true; exitCallback = onExit; browseCallback = onBrowse; muted = false; reducedMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     prepareSound();
-    const saved = window.ADOPTION_SIX_DAY_STATE.read();
-    window.ADOPTION_ENDING_MEDIA.warm();
-    if (!['ending', 'complete'].includes(saved.phase)) prepareMusic(false);
+    const playOpening = replayOpening || (!resumeReady && !window.ADOPTION_SIX_DAY.hasSave());
+    if (playOpening) prepareMusic(openingMusic);
+    else window.ADOPTION_ASSETS.release(openingMusic);
     seen = []; echoIssued = 0; displayedDate = '';
     screen.className = 'second-play-screen'; screen.hidden = false; screen.dataset.finalSent = 'false'; setStage('loading');
     document.body.classList.remove('game-open','login-open'); document.body.classList.add('second-play-open');
     ['intro-screen','login-screen','game-screen'].forEach(id => { document.getElementById(id).hidden = true; });
-    if (resumeReady || window.ADOPTION_SIX_DAY.hasSave()) { finishScene(); return; }
+    if (!playOpening) { finishScene(); return; }
     window.ADOPTION_ACHIEVEMENTS.cinematic('takeover-intro', true);
     $('.second-era-year').textContent = '2026'; $('.second-modern').hidden = false; $('.second-modern').classList.remove('modern-retreat'); $('.second-login-state').textContent = '正在登录';
     $('.second-workspace').hidden = true; $('.second-system-alert').hidden = true; $('.second-calendar').hidden = true; $('.second-skip').hidden = false;

@@ -54,7 +54,7 @@
   let music;
 
   function stopMusic() {
-    music?.pause();
+    if (music) window.ADOPTION_ASSETS.release(music);
     music = undefined;
     const button = document.getElementById('play-ending-music');
     if (button) button.hidden = true;
