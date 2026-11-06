@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex">
+  <title>京城市儿童医院</title>
+  <link rel="stylesheet" href="asset-preload.css?v=nonblocking-20261105">
+  <script src="asset-preload.js?v=nonblocking-20261105" defer></script>
+  <script src="game-reset.js?v=keep-achievements"></script>
+  <script src="achievements.js?v=replay-peace-20261105" defer></script>
+  <link rel="stylesheet" href="orphanage-admin.css">
+  <link rel="stylesheet" href="first-play-ending.css?v=home-20261105-2">
+  <link rel="stylesheet" href="landscape.css?v=full-images-20261105">
+  <link rel="stylesheet" href="hospital-flow.css?v=full-images-20261105">
+  <script defer src="first-play-ending.js?v=nonblocking-20261105"></script>
+  <script defer src="site-navigation.js?v=home-20261105-2"></script>
+  <script defer src="hospital-reset.js?v=same-tab"></script>
+  <script defer src="hospital-news.js"></script>
+  <script defer src="hospital-portal.js?v=matching-cards"></script>
+  <link rel="stylesheet" href="achievements.css?v=bottom-left-20261105">
+  <script defer src="hospital-report.js?v=home-20261105-2"></script>
+</head>
+<body class="admin-page hospital-page">
+  <header>
+    <div class="hospital-banner">规范就医秩序，严厉打击号贩子、医托等违法行为</div>
+    <div class="hospital-toolbar">
+      <div class="hospital-wrap">
+        <span>你好！欢迎来到京城市儿童医院！</span>
+        <div>
+          <a href="#patient-login">[登录]</a>
+          <a href="#registration">[免费注册]</a>
+          <a href="#bookmark">[加入收藏]</a>
+          <a href="#english">[English]</a>
+        </div>
+      </div>
+    </div>
+    <div class="hospital-wrap hospital-masthead">
+      <a class="hospital-brand" href="#home">
+        <svg width="62" height="62" viewBox="0 0 64 64" fill="none" stroke="currentColor" aria-hidden="true">
+          <circle cx="32" cy="32" r="29" stroke-width="1.5"/><circle cx="32" cy="32" r="25" stroke-width="1"/>
+          <path d="M32 47 19 35a8 8 0 0 1 12-11l1 1 1-1a8 8 0 0 1 12 11Z" stroke-width="2"/>
+          <path d="M32 28v11m-5.5-5.5h11" stroke-width="2.5"/>
+        </svg>
+        <span><strong>京城市儿童医院</strong><small>Jingcheng Children’s Hospital</small><em>守护儿童健康成长</em></span>
+      </a>
+      <div class="hospital-search-area">
+        <form id="hospital-site-search" role="search">
+          <select name="type" aria-label="搜索分类"><option value="all">全部</option><option value="news">新闻</option><option value="departments">科室</option><option value="notice">公告</option></select>
+          <input type="search" name="q" aria-label="院内网站搜索" maxlength="60" required>
+          <button type="submit">搜索</button>
+        </form>
+        <p>热门搜索 <a href="#search?q=儿童心理科">儿童心理科</a> <a href="#search?q=儿童保健科">儿童保健科</a> <a href="#search?q=创伤干预">创伤干预</a> <a href="#search?q=门诊时间">门诊时间</a> <a href="#patient-login">检查报告</a></p>
+      </div>
+    </div>
+    <nav class="hospital-wrap hospital-nav" aria-label="医院官网导航">
+      <div class="hospital-nav-inner">
+        <a href="#home">首页</a>
+        <a href="#about">医院概况</a>
+        <a href="#news">新闻动态</a>
+        <a href="#departments">特色科室</a>
+        <a href="#cooperation">公益与协作</a>
+        <details id="patient-menu">
+          <summary>患者服务</summary>
+          <div class="hospital-subnav"><a href="#service">就医指南</a><a href="#patient-login">个人健康档案</a></div>
+        </details>
+        <a href="#contact">联系我们</a>
+      </div>
+    </nav>
+  </header>
+  <div class="hospital-wrap hospital-layout">
+    <aside id="hospital-sidebar" hidden aria-label="栏目菜单"></aside>
+    <main class="admin-content" id="hospital-content" tabindex="-1">
+      <noscript>请启用 JavaScript 后查看报道和档案。</noscript>
+    </main>
+  </div>
+  <footer class="hospital-wrap hospital-footer">京城市儿童医院官方网站 · 《领养日》游戏内虚构网站</footer>
+  <a id="hospital-reset-toast" class="hospital-mail-toast" hidden>
+    <strong>忧郁小猫猫收到一封新邮件</strong>
+    <span>【京城市儿童医院】您的密码已重置成功</span>
+    <small>点击打开邮箱 ›</small>
+  </a>
+  <button type="button" class="achievement-entry achievement-corner" data-achievement-open>成就</button>
+</body>
+</html>

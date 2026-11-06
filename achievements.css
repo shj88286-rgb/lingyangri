@@ -1,0 +1,129 @@
+.achievement-entry {
+  min-height: 28px;
+  padding: 3px 10px;
+  border: 1px solid #9bb6cc;
+  border-radius: 4px;
+  background: linear-gradient(#fff, #e7f1f8);
+  color: #315875;
+  font: 600 12px/1.35 "Microsoft YaHei", "PingFang SC", sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.achievement-entry:hover { background: #e0edf8; }
+.achievement-entry:focus-visible,
+.achievement-dialog button:focus-visible,
+.achievement-toast button:focus-visible { outline: 2px solid #32729f; outline-offset: 2px; }
+.achievement-corner { position: fixed; z-index: 41; bottom: 12px; left: 12px; }
+.second-controls .achievement-entry { min-height: 24px; }
+
+.achievement-dialog, .achievement-toast {
+  box-sizing: border-box;
+  border: 1px solid #88a8c0;
+  border-radius: 6px;
+  background: #f7fafc;
+  color: #253e54;
+  font: 14px/1.5 "Microsoft YaHei", "PingFang SC", sans-serif;
+  letter-spacing: normal;
+  box-shadow: 0 6px 22px #183a5540;
+}
+.achievement-dialog {
+  width: min(680px, calc(100vw - 28px));
+  max-height: calc(100dvh - 28px);
+  padding: 0;
+  overflow: auto;
+}
+.achievement-dialog::backdrop { background: #14293675; }
+.achievement-dialog > header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 15px;
+  border-bottom: 1px solid #9eb7cd;
+  background: linear-gradient(#f5fbff, #d7e7f4);
+}
+.achievement-dialog h2 { margin: 0; font-size: 19px; }
+.achievement-count { margin: 3px 0 0; color: #406681; }
+.achievement-dialog header button,
+.achievement-toast button {
+  border: 0;
+  border-radius: 3px;
+  padding: 0 6px;
+  background: transparent;
+  color: #355773;
+  font: 22px/1.2 sans-serif;
+  cursor: pointer;
+}
+.achievement-dialog header button:hover,
+.achievement-toast button:hover { background: #d8e7f2; }
+.achievement-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+}
+.achievement-card {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid #d2dbe2;
+  border-radius: 4px;
+  background: #edf1f4;
+  color: #586672;
+}
+.achievement-card.is-unlocked { border-color: #a9c4d8; background: #fff; color: #253e54; }
+.achievement-card-icon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #dfe4e8;
+  color: #677683;
+}
+.is-unlocked .achievement-card-icon { background: #f4e7c9; color: #825d26; }
+.achievement-card h3 { margin: 0; font-size: 14px; }
+.achievement-card p { margin: 4px 0 0; font-size: 13px; }
+.achievement-state { color: #586672; font-size: 11px; }
+.is-unlocked .achievement-state { color: #315d7c; }
+
+.achievement-toast {
+  position: fixed;
+  z-index: 12000;
+  inset: auto auto max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: min(294px, calc(100vw - 20px));
+  padding: 8px 9px 8px 12px;
+  border-left: 3px solid #b38b47;
+  animation: achievement-notice var(--achievement-duration, 4s) ease both;
+  pointer-events: none;
+}
+.achievement-toast[hidden] { display: none; }
+.achievement-toast div { flex: 1; }
+.achievement-toast span { display: block; color: #4d6274; font-size: 11px; }
+.achievement-toast strong { display: block; margin-top: 1px; font-size: 14px; }
+.achievement-toast p { margin: 3px 0 0; font-size: 12px; }
+.achievement-toast button { pointer-events: auto; }
+@keyframes achievement-notice {
+  0% { opacity: 0; translate: 0 4px; }
+  5%, 95% { opacity: 1; translate: 0; }
+  100% { opacity: 0; }
+}
+@media (max-width: 480px) {
+  .achievement-list { grid-template-columns: minmax(0, 1fr); }
+  .achievement-toast { width: min(260px, calc(100vw - 20px)); padding: 6px 8px; }
+  .achievement-toast p { font-size: 11px; line-height: 1.4; }
+  .achievement-entry { padding-inline: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .achievement-toast { animation: none; }
+}

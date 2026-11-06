@@ -1,0 +1,114 @@
+/* The warm paper palette belongs to the opening and its notice. */
+body:has(#intro-screen:not([hidden])) .background {
+  background: radial-gradient(ellipse at 83% 12%, #f3dbc0, transparent 55%),
+    linear-gradient(142deg, #f9f4ea 10%, #f3e5d2 100%);
+}
+
+body:has(#intro-screen:not([hidden])) .background > * { display: none; }
+body:has(#intro-screen:not([hidden])) .site-header { margin-block: 18px 9px; }
+body:has(#intro-screen:not([hidden])) .brand { color: #7b5238; }
+
+#intro-screen { width: min(920px, 100%); }
+#intro-screen .intro-card {
+  border-color: #e5d3bd;
+  border-radius: 10px;
+  background:
+    radial-gradient(circle, #99643d10 .65px, transparent 1px) 0 0 / 6px 8px,
+    #fffdf8;
+  box-shadow: 0 18px 62px #65432517, 0 3px 8px #6543250a;
+  backdrop-filter: none;
+}
+
+#intro-screen .intro-layout { padding: 24px 44px 10px; }
+.intro-heading {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 66px;
+  margin-bottom: 12px;
+  padding: 0 106px 10px 0;
+  border-bottom: 1px solid #e9d7c0;
+}
+.intro-heading::after {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background: #c67f44;
+  content: "";
+}
+#intro-screen .intro-heading h1 {
+  margin: 0;
+  color: #583922;
+  font-size: clamp(40px, 5.2vw, 53px);
+  line-height: 1.16;
+}
+.intro-ginkgo { position: absolute; right: 1px; bottom: 6px; width: 105px; height: auto; }
+#intro-screen .story-copy { padding-top: 0; color: #52473d; font-size: 15px; line-height: 1.83; letter-spacing: .015em; }
+#intro-screen .story-copy p { margin-bottom: 9px; }
+#intro-screen .story-copy p:first-child { color: #8c4c24; font-size: 16px; font-weight: 700; }
+
+#intro-screen .goal-card {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 11px;
+  align-items: baseline;
+  margin: 0 44px 14px;
+  padding: 11px 13px;
+  border-color: #edddc9;
+  border-left: 3px solid #dc9a5b;
+  border-radius: 3px;
+  background: #fbf3e6;
+}
+#intro-screen .goal-card h2 { margin: 0; color: #845027; font-size: 14px; font-weight: 700; }
+#intro-screen .goal-text { color: #5e4d40; font-weight: 700; line-height: 1.7; }
+#intro-screen .intro-bottom {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 13px 44px;
+  border-top-color: #eee0cf;
+  background: #fcf7ed;
+}
+
+.intro-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: min(330px, 100%);
+}
+.intro-actions .primary-button { gap: 8px; padding-inline: 10px; }
+
+#start-game, #restart-game, #confirm-start, #confirm-restart {
+  border-color: #9e532b;
+  border-radius: 4px;
+  background: #a4532a;
+  color: #fff;
+  box-shadow: 0 3px 7px #70452720;
+}
+#start-game:hover, #restart-game:hover, #confirm-start:enabled:hover, #confirm-restart:hover { background: #8d4421; }
+#intro-screen .notice-link { color: #765943; font-size: 13px; }
+#intro-screen .notice-link:hover { color: #9c4b22; text-decoration: underline; }
+#intro-screen button:focus-visible, #notice-dialog button:focus-visible { outline-color: #a4532a; }
+
+#notice-dialog, #restart-dialog { border-color: #ebd9c4; background: #fffdf8; }
+:is(#notice-dialog, #restart-dialog) .notice-heading { border-bottom-color: #eee0cf; background: #f8ecdc; color: #70492c; }
+#restart-dialog .notice-actions { gap: 10px; }
+#restart-error:empty { display: none; }
+#notice-dialog .notice-heading button, #notice-dialog .notice-confirmation { color: #795c46; }
+#notice-dialog .notice-body li { color: #584d44; }
+#notice-read { accent-color: #a4532a; }
+
+@media (max-width: 600px) {
+  body:has(#intro-screen:not([hidden])) .site-header { margin-block: 17px 12px; }
+  #intro-screen .intro-layout { padding: 20px 20px 8px; }
+  .intro-heading { min-height: 64px; padding-right: 85px; }
+  #intro-screen .intro-heading h1 { font-size: clamp(26px, 6vw, 38px); letter-spacing: .08em; text-wrap: balance; }
+  .intro-ginkgo { width: 80px; }
+  #intro-screen .story-copy { font-size: 14px; line-height: 1.88; }
+  #intro-screen .story-copy p:first-child { font-size: 15px; }
+  #intro-screen .goal-card { display: block; margin: 0 20px 13px; }
+  #intro-screen .goal-card h2 { margin-bottom: 4px; }
+  #intro-screen .intro-bottom { padding: 12px 20px; }
+}

@@ -1,0 +1,160 @@
+.six-chat-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 0 0 31px;
+  padding: 3px 9px;
+  border-bottom: 1px solid #bed4e3;
+  background: #f4faff;
+  font-size: 11px;
+}
+.six-chat-status progress {
+  flex: 1;
+  min-width: 24px;
+  height: 10px;
+  appearance: none;
+  border: 1px solid #84a4bf;
+  background: #edf3f8;
+}
+.six-chat-status progress::-webkit-progress-bar { background: #edf3f8; }
+.six-chat-status progress::-webkit-progress-value {
+  background: linear-gradient(#c4edff, #58a9e0 45%, #3489c6 50%, #86cce9);
+  transition: width .3s;
+}
+.six-round { white-space: nowrap; }
+.six-feedback {
+  flex: 0 0 auto;
+  block-size: 20px;
+  padding: 3px 9px;
+  color: #526c95;
+  background: #eaf5ff;
+  font-size: 11px;
+  line-height: 14px;
+}
+.six-feedback:empty { display: none; }
+.six-round-active .six-feedback:empty:not([hidden]) { display: block; }
+.six-choices {
+  flex: 0 1 auto;
+  max-height: 49%;
+  overflow: auto;
+  padding: 8px 9px;
+  border-top: 1px solid #c7ddeb;
+  background: #f5faff;
+  color: #375e7b;
+  font-size: 12px;
+}
+.six-round-active .six-choices {
+  flex: 0 0 auto;
+  block-size: clamp(88px, 24dvh, 144px);
+}
+.six-choices h2 { margin: 0 0 5px; font-size: 15px; }
+.six-choices p { margin: 4px 0; line-height: 1.55; }
+:is(.six-choices, .six-mission) .six-mission-goal {
+  margin-block: 9px 5px;
+  padding: 7px 9px;
+  border: 1px solid #a6cbe7;
+  border-radius: 3px;
+  background: #dbeeff;
+  color: #234d76;
+}
+.six-choices button {
+  border: 1px solid #a1bfd5;
+  border-radius: 2px;
+  padding: 5px 8px;
+  background: linear-gradient(#fff, #e5f2fc);
+  color: #315c7b;
+  font: inherit;
+  line-height: 1.45;
+  cursor: pointer;
+}
+.six-choices button:hover { background: #fff4c9; border-color: #bda56a; }
+.six-choices > button { margin-top: 5px; }
+.six-choices .six-early { background: linear-gradient(#fffbea, #f9e9b9); }
+.six-replies { display: grid; gap: 4px; }
+.six-replies button { width: 100%; text-align: left; }
+.six-conversation .retro-message:not(.six-arriving) { animation: none; }
+.second-own-presence, .second-contact-presence {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #376a36;
+  font-size: 10px;
+}
+.second-account-offline .second-own-presence { color: #68788a; }
+.second-contact-presence { margin-left: 6px; }
+.six-milestone {
+  width: min(398px, calc(100% - 32px));
+  max-height: calc(100% - 24px);
+  padding: 0;
+  border: 1px solid #317cae;
+  border-radius: 5px;
+  color: #31546c;
+  background: #f6fbff;
+  box-shadow: 0 8px 28px #26476555;
+  font: 13px/1.6 Tahoma, "Microsoft YaHei", sans-serif;
+}
+.six-milestone::backdrop { background: #29486738; backdrop-filter: none; }
+.six-milestone-body { padding: 13px 16px; }
+.six-milestone h2 { margin: 0 0 6px; font-size: 16px; }
+.six-milestone p { margin: 5px 0; }
+.six-milestone footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 9px 12px;
+  border-top: 1px solid #c4dce9;
+  background: #e5f3fc;
+}
+.six-milestone button {
+  border: 1px solid #81abc7;
+  border-radius: 2px;
+  padding: 5px 12px;
+  background: linear-gradient(#fff, #dceefb);
+  color: #315c7b;
+}
+.six-milestone button:hover { background: #fff4cf; }
+.six-mission {
+  width: min(540px, calc(100% - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow: hidden;
+}
+.six-mission[open] { display: flex; flex-direction: column; }
+.six-mission > header, .six-mission > footer { flex-shrink: 0; }
+.six-mission-body {
+  min-height: 0;
+  padding: 16px 18px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  line-height: 1.8;
+}
+.six-mission-body p { margin: 9px 0; }
+.six-mission footer { justify-content: center; }
+.six-mission button { min-height: 40px; padding-inline: 22px; cursor: pointer; }
+@media (max-height: 500px) {
+  .six-choices { max-height: 58%; }
+  .six-chat-status { flex-basis: 25px; }
+  .six-feedback { block-size: 16px; padding-block: 2px; font-size: 10px; line-height: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .six-chat-status progress::-webkit-progress-value { transition: none; }
+}
+@media (max-width: 900px), (max-height: 480px) {
+  .six-chat-status { flex-basis: 25px; }
+  .second-play-screen .six-choices {
+    flex: 0 1 auto;
+    block-size: auto;
+    max-height: min(52dvh, 58%);
+    padding: 6px 6px calc(6px + var(--achievement-clearance, 0px));
+    scroll-padding-bottom: var(--achievement-clearance, 0px);
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    font-size: 13px;
+  }
+  .six-replies { gap: 5px; }
+  .second-play-screen.six-round-active .six-choices {
+    flex: 0 0 clamp(156px, 30dvh, 232px);
+    block-size: clamp(156px, 30dvh, 232px);
+  }
+  .six-choices button, .six-milestone button { min-height: 44px; }
+  .six-choices .six-early { padding-inline: 12px; }
+}

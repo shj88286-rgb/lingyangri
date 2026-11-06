@@ -1,0 +1,34 @@
+/* 现代 PP：保留现有布局，让导航、文字与消息层次更清楚。 */
+:root{--text:#324a64;--muted:#7b8ea6;--blue:#368cec}
+.background{background:radial-gradient(ellipse at 12% 22%,#deedfc,transparent 55%),linear-gradient(125deg,#eff4fa,#f7f7fb 65%,#ecf2fa)}
+.intro-card{box-shadow:0 24px 80px #355c8311,0 2px 7px #43608008;border-color:#ffffff}
+.intro-story h1{color:#344f6f}.story-copy,.goal-text{color:#617286}.goal-card{background:#f2f7fc;border-color:#dfe9f5}.goal-card h2{color:#4b6d92}
+.login-card{border-color:#e5edf7;box-shadow:0 25px 80px #456d9626,0 2px 8px #4665890a}
+.login-halo{height:245px;background:radial-gradient(ellipse at 10% 0,#cbe6ffb3,transparent 70%),radial-gradient(ellipse at 100% 10%,#e4e4f7aa,transparent 65%),linear-gradient(#f2f7ff,#fff)}
+.nickname{color:#365272}.field-label{color:#71859d}.input-wrap{background:#f6f9fd;border-color:#dce6f2}.input-wrap input{color:#3b5877}.login-options{color:#7c90a8}
+.login-button{background:linear-gradient(100deg,#409ef5,#3684ea);box-shadow:0 5px 15px #377fdf24}.back-button{color:#748aa5}
+.login-account-picker button{color:#6b83a1}.login-account-picker button[aria-pressed=true]{color:#2d6dab;background:#eaf4ff}
+.game-screen{border-color:#d7e3f1;border-radius:14px;box-shadow:0 25px 80px #3e628622,0 3px 10px #405e780a}
+.game-titlebar{background:linear-gradient(100deg,#f8fbff,#eef5fd);border-bottom-color:#dfe8f4;padding-left:20px}
+.game-titlebar .pp-logo{gap:7px}.game-titlebar .pp-logo strong{color:#315677;font-weight:700}
+.game-titlebar .pp-logo::after{content:"2026";font:10px Arial,sans-serif;letter-spacing:1.5px;margin-left:9px;border-left:1px solid #cfdfed;padding-left:13px;color:#829bb3}
+.game-nav{background:linear-gradient(#e9f3ff,#f0f6fd);border-right-color:#dfe9f6}
+.module-button{color:#728da9}.module-button.active{background:#d5e8ff;color:#2675c7;box-shadow:inset 0 0 0 1px #c5dffb}
+.module-button:not(:disabled):hover{background:#dfedfc}.module-button:disabled{opacity:.43}
+.game-profile img{box-shadow:0 3px 9px #557d9d25}.logout-button{color:#7893ae}
+.contacts-panel{background:#f9fbfe;border-right-color:#e2eaf4}
+.contacts-heading h1{font-size:21px;font-weight:600;letter-spacing:1px;color:#365578}.contacts-heading>span{color:#8296ae}
+.contacts-heading>span::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:#67bb92;margin-right:6px;vertical-align:1px}
+.contacts-search{background:#edf3f9;border-color:#e1eaf4;border-radius:8px}.contacts-search input{font-size:12px;color:#415e7f}.contacts-search input::placeholder{color:#8a9db3}
+.contact-row{border-left-width:0;border-radius:8px;width:calc(100% - 18px);margin:3px 9px;padding:14px 11px;gap:11px}
+.contact-row.selected{background:#e5f0ff;box-shadow:inset 0 0 0 1px #d4e6fc}.contact-row:hover{background:#eef4fc}
+.contact-avatar{border-radius:11px;border-color:#dfe7f0}.contact-row-title{margin-bottom:7px}.contact-row-title strong{font-size:13px;color:#3c5877;font-weight:500}.contact-row-title time{color:#90a2b8}.contact-preview{font-size:11px;color:#8194ad}
+.chat-panel{background:#f2f6fb}.conversation-heading{background:#ffffffed;border-bottom-color:#e4ebf4}.conversation-heading h2{font-weight:600;color:#345272;letter-spacing:.5px}.history-label{color:#859ab3}
+.conversation-tools{background:#f8fbfe;border-bottom-color:#e2eaf4}.date-filter{color:#748ca6}.date-filter select{color:#597594;background:white;border-color:#dbe5f1;border-radius:6px}.message-search{background:#eef4fb;border-color:#e0e9f4;border-radius:6px}.message-search input{color:#526e8e}.message-search input::placeholder{color:#879bb3}
+.conversation-date{color:#8398b1}.conversation-date:before,.conversation-date:after{background:#dce6f2}
+.message-heading{color:#6985a5}.message-heading time{color:#8d9fb6}.message-avatar{border-radius:9px}.message-bubble{color:#3c5675;background:#fff;border-color:#e1eaf5;box-shadow:0 2px 5px #46678206;border-radius:3px 12px 12px 12px}
+.from-self .message-bubble{background:#dfedff;border-color:#cfe2fa;color:#345e8c;border-radius:12px 3px 12px 12px}
+.account-menu{border-color:#dce7f3}.account-menu button{color:#536e8d}.account-menu button:hover{background:#edf5ff}
+.album-panel{background:#f8fbfe}.album-heading h1{color:#365578}.album-tile-name{color:#4d6e92}.album-photo-count{color:#8b9eb5}.photo-caption{color:#496586}.photo-comments li p{color:#58728e}
+@media(max-width:1000px) and (min-width:681px){.contact-row{width:calc(100% - 12px);margin:3px 6px;padding:13px 9px;gap:9px}.contact-row-title strong{font-size:12px}.contact-preview{font-size:10px}}
+@media(max-width:680px){.game-screen{border-radius:0;box-shadow:none}.game-titlebar{padding-left:16px}.game-titlebar .pp-logo::after{font-size:9px;margin-left:6px;padding-left:9px}.game-nav{background:#edf5ff}.contacts-heading h1{font-size:21px}.contact-row{width:calc(100% - 24px);margin:4px 12px;padding:16px 12px;gap:13px}.contact-row-title strong{font-size:14px}.contact-preview{font-size:11px}.contacts-search{border-radius:8px}.contacts-search input{font-size:13px}.conversation-heading h2{font-size:15px}.conversation-tools{padding-left:14px;padding-right:14px}.message-bubble{line-height:1.85}}

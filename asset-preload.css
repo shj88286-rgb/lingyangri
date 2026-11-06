@@ -1,0 +1,18 @@
+.asset-loading {
+  position: fixed;
+  z-index: 110;
+  left: 50%;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  translate: -50% 0;
+  display: grid;
+  gap: 7px;
+  width: min(300px, calc(100vw - 32px));
+  padding: 10px 14px;
+  border: 1px solid #ffffff70;
+  border-radius: 6px;
+  background: #5d361ce6;
+  color: #fffaf2;
+  cursor: pointer;
+  text-align: center;
+  font: 13px/1.5 "Microsoft YaHei", sans-serif;
+}
